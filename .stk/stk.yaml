@@ -8,6 +8,7 @@ metadata:
   stack: java-springboot-restapi-stack@4.0.1
 spec:
   type: app
+  app-id: 01HPAKJ9JSF4V02D3W1PSS4M2Q
   plugins:
     - name: 
         coffee-studio/java-springboot-restapi-stack@4.0.1/java-springboot-restapi-base-plugin@2.0.1
