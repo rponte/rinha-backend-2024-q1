@@ -1,0 +1,29 @@
+kind: application
+metadata:
+  description: "Aplica\xE7\xE3o para rinha-backend-2024-q1"
+  name: rinha-backend-2024-q1
+schema-version: v1
+spec:
+  applied-plugins:
+  - alias: java-springboot-restapi-base-plugin-1707605474589
+    connections:
+      generates: []
+      requires: []
+    inputs:
+      project_artifact_id: rinhadev
+      project_description: "Aplica\xE7\xE3o para Rinha de Backend 2024-Q1"
+      project_group_id: br.com.rponte
+      project_name: rinha-backend-2024-q1
+      project_springboot_version: 2.7.2
+      project_version: 0.0.1-SNAPSHOT
+    inputs-envs: {}
+    name: coffee-studio/java-springboot-restapi-stack@4.0.1/java-springboot-restapi-base-plugin
+  - alias: java-spring-data-jpa-plugin-1707605474605
+    connections:
+      generates: []
+      requires: []
+    inputs:
+      database_name: PostgreSQL
+    inputs-envs: {}
+    name: coffee-studio/java-springboot-restapi-stack@4.0.1/java-spring-data-jpa-plugin
+  repository: https://github.com/rafaelpontezup-organization/rinha-backend-2024-q1.git

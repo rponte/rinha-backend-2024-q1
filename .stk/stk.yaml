@@ -1,0 +1,62 @@
+schema-version: v2
+kind: manifest
+metadata:
+  name: rinha-backend-2024-q1
+  description: "Aplicação para rinha-backend-2024-q1"
+  starter: coffee-studio/java-springboot-restapi-stack@4.0.1/java-rest-api-with-jpa
+  stack-version-id: 01HPAK7H1P8A4GCF2C1MDKXXGD
+  stack: java-springboot-restapi-stack@4.0.1
+spec:
+  type: app
+  plugins:
+    - name: 
+        coffee-studio/java-springboot-restapi-stack@4.0.1/java-springboot-restapi-base-plugin@2.0.1
+      alias: java-springboot-restapi-base-plugin-1707605474589
+      plugin-version-id: 01HPAJSJ4WMPPCND7R07ZWMD87
+      stack-version-id: 01HPAK7H1P8A4GCF2C1MDKXXGD
+      type: app
+      inputs:
+        project_name: rinha-backend-2024-q1
+        project_description: "Aplicação para Rinha de Backend 2024-Q1"
+        project_springboot_version: 2.7.2
+        project_group_id: br.com.rponte
+        project_artifact_id: rinhadev
+        project_version: 0.0.1-SNAPSHOT
+      inputs-envs: {}
+      connections:
+        generates: []
+        requires: []
+      links:
+        generates: []
+    - name: 
+        coffee-studio/java-springboot-restapi-stack@4.0.1/java-spring-data-jpa-plugin@2.0.1
+      alias: java-spring-data-jpa-plugin-1707605474605
+      plugin-version-id: 01HPAJSQQ0CBX9MCV94YE7R979
+      stack-version-id: 01HPAK7H1P8A4GCF2C1MDKXXGD
+      type: app
+      inputs:
+        database_name: PostgreSQL
+      inputs-envs: {}
+      connections:
+        generates: []
+        requires: []
+      links:
+        generates: []
+  global-inputs: {}
+  global-computed-inputs:
+    global_cs_project_name: rinha-backend-2024-q1
+    global_cs_project_artifact_id: rinhadev
+    global_cs_project_artifact_id_sanitized: rinhadev
+    global_cs_project_java_version: '17'
+    global_cs_project_springboot_version: 2.7.2
+    global_cs_project_base_package: br.com.rponte.rinhadev
+    global_cs_project_base_package_dir: br/com/rponte/rinhadev
+    global_cs_application_main_java_classname: RinhaBackend2024Q1Application.java
+    global_cs_application_main_java_classpath: br.com.rponte.rinhadev.RinhaBackend2024Q1Application.java
+    global_cs_application_main_java_classpath_dir: br/com/rponte/rinhadev/RinhaBackend2024Q1Application.java
+    global_cs_application_test_java_classname: RinhaBackend2024Q1ApplicationTests.java
+    global_cs_application_test_java_classpath: br.com.rponte.rinhadev.RinhaBackend2024Q1ApplicationTests.java
+    global_cs_application_test_java_classpath_dir: br/com/rponte/rinhadev/RinhaBackend2024Q1ApplicationTests.java
+    global_cs_database_name: PostgreSQL
+    global_cs_database_name_formatted: postgresql
+  repository: https://github.com/rafaelpontezup-organization/rinha-backend-2024-q1.git
