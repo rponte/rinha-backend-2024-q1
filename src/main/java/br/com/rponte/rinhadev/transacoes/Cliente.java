@@ -2,10 +2,7 @@ package br.com.rponte.rinhadev.transacoes;
 
 import org.springframework.util.Assert;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Cliente {
@@ -14,13 +11,20 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 40)
+    private String nome;
+
+    @Column(nullable = false)
     private Long saldo;
+
+    @Column(nullable = false)
     private Long limite;
 
     @Deprecated
     public Cliente() {}
 
-    public Cliente(Long saldo, Long limite) {
+    public Cliente(String nome, Long saldo, Long limite) {
+        this.nome = nome;
         this.saldo = saldo;
         this.limite = limite;
     }

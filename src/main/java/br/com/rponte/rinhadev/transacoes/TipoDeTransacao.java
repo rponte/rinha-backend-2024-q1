@@ -13,6 +13,10 @@ public enum TipoDeTransacao {
         this.sigla = sigla;
     }
 
+    public String getSigla() {
+        return sigla;
+    }
+
     public static TipoDeTransacao ofSigla(String sigla) {
         Assert.notNull(sigla, "sigla não pode ser nula");
         Assert.hasLength(sigla, "sigla não pode ser vazia");

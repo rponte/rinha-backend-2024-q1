@@ -1,25 +1,67 @@
 package br.com.rponte.rinhadev.transacoes;
 
 import base.SpringBootIntegrationTest;
-import br.com.rponte.rinhadev.samples.authors.AuthorRespository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
 
     @Autowired
-    private TransacaoRepository repository;
-    @Autowired
     private ClienteRepository clienteRepository;
+    @Autowired
+    private TransacaoRepository transacaoRepository;
+
+    private static Cliente ZAN;
+    private static Cliente RAFAEL;
 
     @BeforeEach
     public void setUp() {
-        repository.deleteAll();
+        transacaoRepository.deleteAll();
         clienteRepository.deleteAll();
+        clienteRepository.saveAll(List.of(
+                ZAN = new Cliente("Zan", 0L, 1000L),
+                RAFAEL = new Cliente("Rafael Ponte", 0L, 1000L)
+        ));
     }
 
-    
+    @Test
+    @DisplayName("deve criar transação de credito")
+    public void t1() throws Exception {
+        // cenário
+        Long clienteId = ZAN.getId();
+        NovaTransacaoRequest request = new NovaTransacaoRequest(400L, "c", "pix");
+
+        // ação (+validação)
+        mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.saldo").value(400))
+                .andExpect(jsonPath("$.limite").value(1000))
+        ;
+
+        // validação
+        assertAll("ZAN: saldo e transacoes",
+                () -> assertEquals(400, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
+                () -> assertEquals(1, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
+        );
+        assertAll("RAFAEL: saldo e transacoes",
+                () -> assertEquals(0, clienteRepository.getSaldo(RAFAEL.getId()), "saldo atual"),
+                () -> assertEquals(0, transacaoRepository.countByClienteId(RAFAEL.getId()), "numero de transações")
+        );
+    }
 
 }

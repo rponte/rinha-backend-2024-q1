@@ -33,7 +33,7 @@ public class Transacao {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Cliente cliente;
 
-    @Column(nullable = false, updatable = false, insertable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime realizadaEm = LocalDateTime.now();
 
     @Deprecated
