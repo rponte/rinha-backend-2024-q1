@@ -4,10 +4,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
-@ResponseStatus(
-        code = UNPROCESSABLE_ENTITY,
-        reason = "saldo da conta insuficiente"
-)
+@ResponseStatus(UNPROCESSABLE_ENTITY)
 public class SaldoInsuficienteException extends RuntimeException {
 
     public SaldoInsuficienteException(String message) {

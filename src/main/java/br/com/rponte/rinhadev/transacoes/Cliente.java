@@ -1,7 +1,5 @@
 package br.com.rponte.rinhadev.transacoes;
 
-import org.springframework.util.Assert;
-
 import javax.persistence.*;
 
 @Entity
@@ -41,7 +39,7 @@ public class Cliente {
 
     public Long debita(Long valor) {
         if ((saldo - valor) < limite*(-1)) {
-            throw new SaldoInsuficienteException("saldo da conta insuficiente: " + saldo);
+            throw new SaldoInsuficienteException("saldo da conta insuficiente");
         }
         saldo = saldo - valor;
         return saldo;
