@@ -4,6 +4,8 @@ import base.SpringBootIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
@@ -196,11 +198,11 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
         assertEquals(0, transacaoRepository.count(), "numero de transações");
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "a", "Zan"})
     @DisplayName("não deve processar transação quando cliente invalido")
-    public void t7() throws Exception {
+    public void t7(String clienteInvalidoId) throws Exception {
         // cenário
-        String clienteInvalidoId = " ";
         NovaTransacaoRequest request = new NovaTransacaoRequest(100L, "d", "pix");
 
         // ação (+validação)
