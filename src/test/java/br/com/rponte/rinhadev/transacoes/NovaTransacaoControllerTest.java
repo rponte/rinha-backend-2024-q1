@@ -196,4 +196,23 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
         assertEquals(0, transacaoRepository.count(), "numero de transações");
     }
 
+    @Test
+    @DisplayName("não deve processar transação quando cliente invalido")
+    public void t7() throws Exception {
+        // cenário
+        String clienteInvalidoId = " ";
+        NovaTransacaoRequest request = new NovaTransacaoRequest(100L, "d", "pix");
+
+        // ação (+validação)
+        mockMvc.perform(post("/clientes/{id}/transacoes", clienteInvalidoId)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isBadRequest())
+        ;
+
+        // validação
+        assertEquals(0, transacaoRepository.count(), "numero de transações");
+    }
+
 }
