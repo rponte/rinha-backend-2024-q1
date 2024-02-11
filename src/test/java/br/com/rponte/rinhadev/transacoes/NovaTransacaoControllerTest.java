@@ -181,7 +181,7 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
     public void t6() throws Exception {
         // cenário
         Long clienteInexistenteId = -9999L;
-        NovaTransacaoRequest request = new NovaTransacaoRequest(9100L, "d", "pix");
+        NovaTransacaoRequest request = new NovaTransacaoRequest(100L, "d", "pix");
 
         // ação (+validação)
         mockMvc.perform(post("/clientes/{id}/transacoes", clienteInexistenteId)
