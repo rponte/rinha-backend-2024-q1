@@ -120,4 +120,28 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
         );
     }
 
+    @Test
+    @DisplayName("🥳 | deve processar transação de debito até o limite da conta com alta-concorrência")
+    public void t4() throws Exception {
+        // cenário
+        Long clienteId = ZAN.getId();
+        NovaTransacaoRequest request = new NovaTransacaoRequest(200L, "d", "pix");
+
+        // ação (+validação)
+        doSyncAndConcurrently(10, s -> {
+            mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                            .contentType(APPLICATION_JSON)
+                            .content(toJson(request))
+                            .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                    .andExpect(status().isOk())
+            ;
+        });
+
+        // validação
+        assertAll("ZAN: saldo e transacoes",
+                () -> assertEquals(-1000, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
+                () -> assertEquals(5, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
+        );
+    }
+
 }
