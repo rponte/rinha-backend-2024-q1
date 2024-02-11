@@ -245,11 +245,11 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
     }
 
     @Test
-    @DisplayName("não deve processar transação quando dados invalidos: blank, size e regex")
+    @DisplayName("não deve processar transação quando dados invalidos: positive, blank, size e regex")
     public void t9() throws Exception {
         // cenário
         Long clienteId = ZAN.getId();
-        NovaTransacaoRequest request = new NovaTransacaoRequest(1000L, "", "");
+        NovaTransacaoRequest request = new NovaTransacaoRequest(0L, "", "");
 
         // ação (+validação)
         mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
@@ -257,8 +257,9 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
                         .content(toJson(request))
                         .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.violations", hasSize(5)))
+                .andExpect(jsonPath("$.violations", hasSize(6)))
                 .andExpect(jsonPath("$.violations", containsInAnyOrder(
+                                violation("valor", "must be greater than 0"),
                                 violation("tipo", "must not be blank"),
                                 violation("tipo", "must match \"c|d\""),
                                 violation("tipo", "size must be between 1 and 1"),
