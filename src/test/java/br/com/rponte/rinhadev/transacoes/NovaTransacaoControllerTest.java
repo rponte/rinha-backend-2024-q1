@@ -37,7 +37,7 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
     }
 
     @Test
-    @DisplayName("deve criar transação de credito")
+    @DisplayName("deve processar transação de credito")
     public void t1() throws Exception {
         // cenário
         Long clienteId = ZAN.getId();
@@ -56,6 +56,62 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
         // validação
         assertAll("ZAN: saldo e transacoes",
                 () -> assertEquals(400, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
+                () -> assertEquals(1, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
+        );
+        assertAll("RAFAEL: saldo e transacoes",
+                () -> assertEquals(0, clienteRepository.getSaldo(RAFAEL.getId()), "saldo atual"),
+                () -> assertEquals(0, transacaoRepository.countByClienteId(RAFAEL.getId()), "numero de transações")
+        );
+    }
+
+    @Test
+    @DisplayName("deve processar transação de debito")
+    public void t2() throws Exception {
+        // cenário
+        Long clienteId = ZAN.getId();
+        NovaTransacaoRequest request = new NovaTransacaoRequest(300L, "d", "pix");
+
+        // ação (+validação)
+        mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.saldo").value(-300))
+                .andExpect(jsonPath("$.limite").value(1000))
+        ;
+
+        // validação
+        assertAll("ZAN: saldo e transacoes",
+                () -> assertEquals(-300, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
+                () -> assertEquals(1, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
+        );
+        assertAll("RAFAEL: saldo e transacoes",
+                () -> assertEquals(0, clienteRepository.getSaldo(RAFAEL.getId()), "saldo atual"),
+                () -> assertEquals(0, transacaoRepository.countByClienteId(RAFAEL.getId()), "numero de transações")
+        );
+    }
+
+    @Test
+    @DisplayName("deve processar transação de debito até o limite da conta")
+    public void t3() throws Exception {
+        // cenário
+        Long clienteId = ZAN.getId();
+        NovaTransacaoRequest request = new NovaTransacaoRequest(ZAN.getLimite(), "d", "pix");
+
+        // ação (+validação)
+        mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.saldo").value(-1000))
+                .andExpect(jsonPath("$.limite").value(1000))
+        ;
+
+        // validação
+        assertAll("ZAN: saldo e transacoes",
+                () -> assertEquals(-1000, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
                 () -> assertEquals(1, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
         );
         assertAll("RAFAEL: saldo e transacoes",
