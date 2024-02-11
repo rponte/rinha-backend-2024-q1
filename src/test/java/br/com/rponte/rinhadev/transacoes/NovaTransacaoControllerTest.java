@@ -5,13 +5,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -211,6 +212,60 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
                         .content(toJson(request))
                         .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
                 .andExpect(status().isBadRequest())
+        ;
+
+        // validação
+        assertEquals(0, transacaoRepository.count(), "numero de transações");
+    }
+
+    @Test
+    @DisplayName("não deve processar transação quando dados invalidos: nulos")
+    public void t8() throws Exception {
+        // cenário
+        Long clienteId = ZAN.getId();
+        NovaTransacaoRequest request = new NovaTransacaoRequest(null, null, null);
+
+        // ação (+validação)
+        mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.violations", hasSize(3)))
+                .andExpect(jsonPath("$.violations", containsInAnyOrder(
+                                violation("valor", "must not be null"),
+                                violation("tipo", "must not be blank"),
+                                violation("descricao", "must not be blank")
+                        )
+                ))
+        ;
+
+        // validação
+        assertEquals(0, transacaoRepository.count(), "numero de transações");
+    }
+
+    @Test
+    @DisplayName("não deve processar transação quando dados invalidos: blank, size e regex")
+    public void t9() throws Exception {
+        // cenário
+        Long clienteId = ZAN.getId();
+        NovaTransacaoRequest request = new NovaTransacaoRequest(1000L, "", "");
+
+        // ação (+validação)
+        mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.violations", hasSize(5)))
+                .andExpect(jsonPath("$.violations", containsInAnyOrder(
+                                violation("tipo", "must not be blank"),
+                                violation("tipo", "must match \"c|d\""),
+                                violation("tipo", "size must be between 1 and 1"),
+                                violation("descricao", "must not be blank"),
+                                violation("descricao", "size must be between 1 and 10")
+                        )
+                ))
         ;
 
         // validação

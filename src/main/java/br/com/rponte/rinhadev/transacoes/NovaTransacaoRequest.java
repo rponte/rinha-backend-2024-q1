@@ -4,7 +4,7 @@ import javax.validation.constraints.*;
 
 public record NovaTransacaoRequest(
         @NotNull @Positive Long valor,
-        @NotBlank @Size(max = 1) @Pattern(regexp = "c|d") String tipo,
+        @NotBlank @Size(min = 1, max = 1) @Pattern(regexp = "c|d") String tipo,
         @NotBlank @Size(min = 1, max = 10) String descricao
 ) {
 
