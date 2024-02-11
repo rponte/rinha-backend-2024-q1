@@ -248,7 +248,7 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
     public void t9() throws Exception {
         // cenário
         Long clienteId = ZAN.getId();
-        NovaTransacaoRequest request = new NovaTransacaoRequest(0L, "", "");
+        NovaTransacaoRequest request = new NovaTransacaoRequest(0L, " ".repeat(2), " ".repeat(11));
 
         // ação (+validação)
         mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
