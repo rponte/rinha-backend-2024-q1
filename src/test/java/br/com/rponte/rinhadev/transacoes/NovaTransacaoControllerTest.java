@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -120,6 +121,14 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
         );
     }
 
+    /**
+     * Teste de integração necessário para garantir que não há race-condition (lost update)
+     * ao processar transações de débito em ambiente de alta-concorrência <br/><br/>
+     *
+     * ⭐️ Para entender mais sobre o tema, assista a talk
+     * "<b>Por que testes de unidade NÃO SÃO SUFICIENTES para seus microsserviços</b>"<br/>
+     * https://youtu.be/ZV4Fl1uEbqw?si=PGDoPqkRvpR3MDhK
+     */
     @Test
     @DisplayName("🥳 | deve processar transação de debito até o limite da conta com alta-concorrência")
     public void t4() throws Exception {
@@ -142,6 +151,49 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
                 () -> assertEquals(-1000, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
                 () -> assertEquals(5, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
         );
+    }
+
+    @Test
+    @DisplayName("não deve processar transação de debito além do limite da conta")
+    public void t5() throws Exception {
+        // cenário
+        Long clienteId = ZAN.getId();
+        NovaTransacaoRequest request = new NovaTransacaoRequest(ZAN.getLimite()+1, "d", "pix");
+
+        // ação (+validação)
+        mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.detail", is("saldo da conta insuficiente: 0")))
+        ;
+
+        // validação
+        assertAll("ZAN: saldo e transacoes",
+                () -> assertEquals(0, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
+                () -> assertEquals(0, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
+        );
+    }
+
+    @Test
+    @DisplayName("não deve processar transação quando cliente não encontrado")
+    public void t6() throws Exception {
+        // cenário
+        Long clienteInexistenteId = -9999L;
+        NovaTransacaoRequest request = new NovaTransacaoRequest(9100L, "d", "pix");
+
+        // ação (+validação)
+        mockMvc.perform(post("/clientes/{id}/transacoes", clienteInexistenteId)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail", is("cliente não encontrado")))
+        ;
+
+        // validação
+        assertEquals(0, transacaoRepository.count(), "numero de transações");
     }
 
 }
