@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -78,5 +79,19 @@ class ExtratoControllerTest extends SpringBootIntegrationTest {
                     .andExpect(jsonPath("$.ultimas_transacoes[9].descricao").value("c3" ))
         ;
 
+    }
+
+    @Test
+    @DisplayName("não deve imprimir extrato quando cliente não encontrado")
+    public void t2() throws Exception {
+        // cenario
+        Long clienteInexistenteId = -9999L;
+
+        // ação (+validação)
+        mockMvc.perform(get("/clientes/{id}/extrato", clienteInexistenteId)
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail", is("cliente não encontrado")))
+        ;
     }
 }
