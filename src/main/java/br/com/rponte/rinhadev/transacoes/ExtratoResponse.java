@@ -7,7 +7,7 @@ import java.util.List;
 
 public record ExtratoResponse(
         SaldoResponse saldo,
-        List<TransacaoResponse> ultimasTransacoes
+        @JsonProperty("ultimas_transacoes") List<TransacaoResponse> ultimasTransacoes
 ) {
 
     public static ExtratoResponse of(Cliente cliente, List<Transacao> transacoes) {
@@ -36,7 +36,7 @@ public record ExtratoResponse(
             Long valor,
             String tipo,
             String descricao,
-            LocalDateTime realizadaEm
+            @JsonProperty("realizada_em")LocalDateTime realizadaEm
     ) {}
 
 }
