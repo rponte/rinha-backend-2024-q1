@@ -133,7 +133,7 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
      * https://youtu.be/ZV4Fl1uEbqw?si=PGDoPqkRvpR3MDhK
      */
     @Nested
-    @DisplayName("⭐️ | Transações com alta-concorrência (Race conditions)")
+    @DisplayName("⭐️ | Ambiente de alta-concorrência (Race conditions)")
     class t4 {
 
         private static final int NUMBER_OF_USERS = 10;
