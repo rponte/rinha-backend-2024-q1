@@ -3,6 +3,7 @@ package br.com.rponte.rinhadev.transacoes;
 import base.SpringBootIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -124,35 +125,67 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
     }
 
     /**
-     * Teste de integração necessário para garantir que não há race-condition (lost update)
-     * ao processar transações de débito em ambiente de alta-concorrência <br/><br/>
-     *
+     * Testes de integração necessários para garantir que não há race-condition (lost update)
+     * ao processar transações em ambiente de alta-concorrência <br/><br/>
+     * <p>
      * ⭐️ Para entender mais sobre o tema, assista a talk
      * "<b>Por que testes de unidade NÃO SÃO SUFICIENTES para seus microsserviços</b>"<br/>
      * https://youtu.be/ZV4Fl1uEbqw?si=PGDoPqkRvpR3MDhK
      */
-    @Test
-    @DisplayName("🥳 | deve processar transação de debito até o limite da conta com alta-concorrência")
-    public void t4() throws Exception {
-        // cenário
-        Long clienteId = ZAN.getId();
-        NovaTransacaoRequest request = new NovaTransacaoRequest(200L, "d", "pix");
+    @Nested
+    @DisplayName("⭐️ | Transações com alta-concorrência (Race conditions)")
+    class t4 {
 
-        // ação (+validação)
-        doSyncAndConcurrently(10, s -> {
-            mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
-                            .contentType(APPLICATION_JSON)
-                            .content(toJson(request))
-                            .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
-                    .andExpect(status().isOk())
-            ;
-        });
+        private static final int NUMBER_OF_USERS = 10;
 
-        // validação
-        assertAll("ZAN: saldo e transacoes",
-                () -> assertEquals(-1000, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
-                () -> assertEquals(5, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
-        );
+        @Test
+        @DisplayName("🥳 | deve processar transação de credito com alta-concorrência")
+        public void t4a() throws Exception {
+            // cenário
+            Long clienteId = ZAN.getId();
+            NovaTransacaoRequest request = new NovaTransacaoRequest(200L, "c", "pix");
+
+            // ação
+            doSyncAndConcurrently(NUMBER_OF_USERS, s -> {
+                mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                                .contentType(APPLICATION_JSON)
+                                .content(toJson(request))
+                                .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                        .andExpect(status().isOk())
+                ;
+            });
+
+            // validação
+            assertAll("ZAN: saldo e transacoes",
+                    () -> assertEquals(2000, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
+                    () -> assertEquals(10, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
+            );
+        }
+
+        @Test
+        @DisplayName("🥳 | deve processar transação de debito até o limite da conta com alta-concorrência")
+        public void t4b() throws Exception {
+            // cenário
+            Long clienteId = ZAN.getId();
+            NovaTransacaoRequest request = new NovaTransacaoRequest(200L, "d", "pix");
+
+            // ação
+            doSyncAndConcurrently(NUMBER_OF_USERS, s -> {
+                mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                                .contentType(APPLICATION_JSON)
+                                .content(toJson(request))
+                                .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                        .andExpect(status().isOk())
+                ;
+            });
+
+            // validação
+            assertAll("ZAN: saldo e transacoes",
+                    () -> assertEquals(-1000, clienteRepository.getSaldo(ZAN.getId()), "saldo atual"),
+                    () -> assertEquals(5, transacaoRepository.countByClienteId(ZAN.getId()), "numero de transações")
+            );
+        }
+
     }
 
     @Test
