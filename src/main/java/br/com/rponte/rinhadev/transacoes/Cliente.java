@@ -1,8 +1,11 @@
 package br.com.rponte.rinhadev.transacoes;
 
+import org.hibernate.annotations.Check;
+
 import javax.persistence.*;
 
 @Entity
+@Check(constraints = "(saldo + limite) >= 0")
 public class Cliente {
 
     @Id
@@ -38,7 +41,7 @@ public class Cliente {
     }
 
     public Long debita(Long valor) {
-        if ((saldo - valor) < limite*(-1)) {
+        if ((saldo + limite) - valor < 0) {
             throw new SaldoInsuficienteException("saldo da conta insuficiente");
         }
         saldo = saldo - valor;
