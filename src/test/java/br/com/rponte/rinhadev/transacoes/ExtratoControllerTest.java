@@ -11,7 +11,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,7 +31,7 @@ class ExtratoControllerTest extends SpringBootIntegrationTest {
         clienteRepository.deleteAll();
         clienteRepository.saveAll(List.of(
                 ZAN = new Cliente("Zan", 1960L, 6000L),
-                RAFAEL = new Cliente("Rafael Ponte", -299L, 1000L)
+                RAFAEL = new Cliente("Rafael Ponte", -299L, 500L)
         ));
     }
 
@@ -41,8 +40,7 @@ class ExtratoControllerTest extends SpringBootIntegrationTest {
     public void t1() throws Exception {
         // cenario
         transacaoRepository.saveAll(List.of(
-                // zan
-                // 1000+400+800-300+400-400-250L+300-120-1000+240+890=1960
+                // zan = $1960
                 new Transacao(1000L, TipoDeTransacao.CREDITO, "c1" , ZAN),
                 new Transacao(400L , TipoDeTransacao.CREDITO, "c2" , ZAN),
                 new Transacao(800L , TipoDeTransacao.CREDITO, "c3" , ZAN),
@@ -55,7 +53,7 @@ class ExtratoControllerTest extends SpringBootIntegrationTest {
                 new Transacao(1000L, TipoDeTransacao.DEBITO , "d10", ZAN),
                 new Transacao(240L , TipoDeTransacao.CREDITO, "c11", ZAN),
                 new Transacao(890L , TipoDeTransacao.CREDITO, "c12", ZAN),
-                // rafael = -299
+                // rafael = $-299
                 new Transacao(299L , TipoDeTransacao.DEBITO, "d13" , RAFAEL)
         ));
 
@@ -63,9 +61,10 @@ class ExtratoControllerTest extends SpringBootIntegrationTest {
         mockMvc.perform(get("/clientes/{id}/extrato", ZAN.getId())
                         .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.saldo.total").value(1960L))
-                .andExpect(jsonPath("$.saldo.limite").value(6000))
-                .andExpect(jsonPath("$.saldo.data_extrato").isNotEmpty())
+                .andExpect(jsonPath("$.saldo").exists())
+                    .andExpect(jsonPath("$.saldo.total").value(1960L))
+                    .andExpect(jsonPath("$.saldo.limite").value(6000))
+                    .andExpect(jsonPath("$.saldo.data_extrato").isNotEmpty())
                 .andExpect(jsonPath("$.ultimas_transacoes", hasSize(10)))
                     .andExpect(jsonPath("$.ultimas_transacoes[0].descricao").value("c12"))
                     .andExpect(jsonPath("$.ultimas_transacoes[1].descricao").value("c11"))
@@ -78,12 +77,47 @@ class ExtratoControllerTest extends SpringBootIntegrationTest {
                     .andExpect(jsonPath("$.ultimas_transacoes[8].descricao").value("d4" ))
                     .andExpect(jsonPath("$.ultimas_transacoes[9].descricao").value("c3" ))
         ;
+    }
 
+    @Test
+    @DisplayName("deve imprimir extrato do cliente quando cliente possui menos de 10 transações")
+    public void t2() throws Exception {
+        // cenario
+        transacaoRepository.saveAll(List.of(
+                new Transacao(299L , TipoDeTransacao.DEBITO, "d1" , RAFAEL)
+        ));
+
+        // ação (+validação)
+        mockMvc.perform(get("/clientes/{id}/extrato", RAFAEL.getId())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.saldo").exists())
+                    .andExpect(jsonPath("$.saldo.total").value(-299))
+                    .andExpect(jsonPath("$.saldo.limite").value(500L))
+                    .andExpect(jsonPath("$.saldo.data_extrato").isNotEmpty())
+                .andExpect(jsonPath("$.ultimas_transacoes", hasSize(1)))
+                    .andExpect(jsonPath("$.ultimas_transacoes[0].descricao").value("d1"))
+        ;
+    }
+
+    @Test
+    @DisplayName("deve imprimir extrato do cliente quando cliente não possui transações")
+    public void t3() throws Exception {
+        // ação (+validação)
+        mockMvc.perform(get("/clientes/{id}/extrato", RAFAEL.getId())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.saldo").exists())
+                    .andExpect(jsonPath("$.saldo.total").value(-299L))
+                    .andExpect(jsonPath("$.saldo.limite").value(500))
+                    .andExpect(jsonPath("$.saldo.data_extrato").isNotEmpty())
+                .andExpect(jsonPath("$.ultimas_transacoes").isEmpty())
+        ;
     }
 
     @Test
     @DisplayName("não deve imprimir extrato quando cliente não encontrado")
-    public void t2() throws Exception {
+    public void t4() throws Exception {
         // cenario
         Long clienteInexistenteId = -9999L;
 
