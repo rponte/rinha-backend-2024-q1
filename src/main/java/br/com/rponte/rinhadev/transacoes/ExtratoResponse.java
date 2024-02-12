@@ -36,7 +36,7 @@ public record ExtratoResponse(
             Long valor,
             String tipo,
             String descricao,
-            @JsonProperty("realizada_em")LocalDateTime realizadaEm
+            @JsonProperty("realizada_em") LocalDateTime realizadaEm
     ) {}
 
 }
