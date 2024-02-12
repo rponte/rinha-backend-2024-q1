@@ -72,8 +72,8 @@ class RinhaBackend2024Q1ApplicationTests {
         assertAll("spring datasource config - connection pool (HikariCP)",
                 () -> _assertPropertyEquals("false", "spring.datasource.hikari.auto-commit"),
                 () -> _assertPropertyEquals("20", "spring.datasource.hikari.maximum-pool-size"),
-                () -> _assertPropertyEquals("10000", "spring.datasource.hikari.connection-timeout"),
-                () -> _assertPropertyEquals("5000", "spring.datasource.hikari.validation-timeout"),
+                () -> _assertPropertyEquals("5000", "spring.datasource.hikari.connection-timeout"),
+                () -> _assertPropertyEquals("2000", "spring.datasource.hikari.validation-timeout"),
                 () -> _assertPropertyEquals("1800000", "spring.datasource.hikari.max-lifetime"),
                 () -> _assertPropertyEquals("60000", "spring.datasource.hikari.leak-detection-threshold")
         );
@@ -91,7 +91,7 @@ class RinhaBackend2024Q1ApplicationTests {
                 () -> _assertPropertyEquals("true", "spring.jpa.properties.hibernate.connection.provider_disables_autocommit"),
                 () -> _assertPropertyEquals("true", "spring.jpa.properties.hibernate.query.in_clause_parameter_padding"),
                 () -> _assertPropertyEquals("true", "spring.jpa.properties.hibernate.query.fail_on_pagination_over_collection_fetch"),
-                () -> _assertPropertyEquals("4096", "spring.jpa.properties.hibernate.query.plan_cache_max_size")
+                () -> _assertPropertyEquals("1024", "spring.jpa.properties.hibernate.query.plan_cache_max_size")
         );
     }
 
