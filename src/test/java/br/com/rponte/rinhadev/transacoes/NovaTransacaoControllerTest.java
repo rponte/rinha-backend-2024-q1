@@ -12,7 +12,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -250,12 +250,15 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
         assertEquals(0, transacaoRepository.count(), "numero de transações");
     }
 
+    /**
+     * Testes de granularidade fina estão na classe {@link NovaTransacaoRequestTest}
+     */
     @Test
-    @DisplayName("não deve processar transação quando dados invalidos: nulos")
+    @DisplayName("não deve processar transação quando dados invalidos")
     public void t8() throws Exception {
         // cenário
         Long clienteId = ZAN.getId();
-        NovaTransacaoRequest request = new NovaTransacaoRequest(null, null, null);
+        NovaTransacaoRequest request = new NovaTransacaoRequest(-1L, "x", "a".repeat(11));
 
         // ação (+validação)
         mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
@@ -263,42 +266,6 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
                         .content(toJson(request))
                         .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.violations", hasSize(3)))
-                .andExpect(jsonPath("$.violations", containsInAnyOrder(
-                                violation("valor", "must not be null"),
-                                violation("tipo", "must not be blank"),
-                                violation("descricao", "must not be blank")
-                        )
-                ))
-        ;
-
-        // validação
-        assertEquals(0, transacaoRepository.count(), "numero de transações");
-    }
-
-    @Test
-    @DisplayName("não deve processar transação quando dados invalidos: positive, blank, size e regex")
-    public void t9() throws Exception {
-        // cenário
-        Long clienteId = ZAN.getId();
-        NovaTransacaoRequest request = new NovaTransacaoRequest(0L, " ".repeat(2), " ".repeat(11));
-
-        // ação (+validação)
-        mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
-                        .contentType(APPLICATION_JSON)
-                        .content(toJson(request))
-                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.violations", hasSize(6)))
-                .andExpect(jsonPath("$.violations", containsInAnyOrder(
-                                violation("valor", "must be greater than 0"),
-                                violation("tipo", "must not be blank"),
-                                violation("tipo", "must match \"c|d\""),
-                                violation("tipo", "size must be between 1 and 1"),
-                                violation("descricao", "must not be blank"),
-                                violation("descricao", "size must be between 1 and 10")
-                        )
-                ))
         ;
 
         // validação

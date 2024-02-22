@@ -9,9 +9,15 @@ public record NovaTransacaoRequest(
 ) {
 
     public Transacao toModel(Cliente cliente) {
+
+        if (cliente == null)
+            throw new IllegalArgumentException("cliente informado não pode ser nulo");
+
         return new Transacao(
-                this.valor, TipoDeTransacao.ofSigla(this.tipo),
-                this.descricao, cliente
+                this.valor,
+                TipoDeTransacao.ofSigla(this.tipo),
+                this.descricao,
+                cliente
         );
     }
 
