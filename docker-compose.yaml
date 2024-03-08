@@ -1,18 +1,40 @@
 version: '3.8'
 
 services:
+  api01: &api
+    image: rponte/rinha-2024q1-java-is-dead-with-spring-jvm
+    hostname: api01
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rinha_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=5
+      - SPRING_SQL_INIT_MODE=never
+      - SPRING_JPA_SHOW_SQL=false
+      - LOGGING_LEVEL_ROOT=error
+    ports:
+      - "3001:8080"
+      - "9999:8080"
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:16.2
     restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: ${POSTGRES_USER:-dev_db}
+      POSTGRES_DB: ${POSTGRES_USER:-rinha_db}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
-      - postgres-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-volumes:
-  postgres-data: # named volumes can be managed easier using docker-compose
-    driver: local
+#volumes:
+#  postgres-data: # named volumes can be managed easier using docker-compose
+#    driver: local
+
+networks:
+  default:
+    driver: bridge
+    name: rinha-net-2024q1
