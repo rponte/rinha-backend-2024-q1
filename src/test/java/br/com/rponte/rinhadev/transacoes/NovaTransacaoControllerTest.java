@@ -275,4 +275,28 @@ class NovaTransacaoControllerTest extends SpringBootIntegrationTest {
         assertEquals(0, transacaoRepository.count(), "numero de transações");
     }
 
+    /**
+     * Cenário existente no teste do Gatling
+     */
+    @Test
+    @DisplayName("não deve processar transação quando valor for decimal")
+    public void t9() throws Exception {
+        // cenário
+        Long clienteId = ZAN.getId();
+        String json = """
+                { "valor": 1.2, "tipo": "d", "descricao": "devolve" }
+                """;
+
+        // ação (+validação)
+        mockMvc.perform(post("/clientes/{id}/transacoes", clienteId)
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, "en"))
+                .andExpect(status().isBadRequest())
+        ;
+
+        // validação
+        assertEquals(0, transacaoRepository.count(), "numero de transações");
+    }
+
 }

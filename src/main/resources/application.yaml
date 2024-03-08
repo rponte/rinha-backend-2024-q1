@@ -33,8 +33,8 @@ spring:
         hikari:
             auto-commit: false
             maximum-pool-size: 20
-            connection-timeout: 5000        # 5s
-            validation-timeout: 2000        # 5s
+            connection-timeout: 1000        # 1s
+            validation-timeout: 500         # 500ms
             max-lifetime: 1800000           # 30min
             leak-detection-threshold: 60000 # 1min
     # Creates database schemas via schema.sql
@@ -76,6 +76,9 @@ spring:
             add-mappings: false
     mvc:
         throw-exception-if-no-handler-found: true
+    jackson:
+        deserialization:
+            accept_float_as_int: false
 
 ##
 # Spring Actuator
