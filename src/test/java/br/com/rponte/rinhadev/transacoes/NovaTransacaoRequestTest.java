@@ -1,6 +1,9 @@
 package br.com.rponte.rinhadev.transacoes;
 
 import base.SpringBootIntegrationTest;
+import br.com.rponte.rinhadev.transacoes.domain.Cliente;
+import br.com.rponte.rinhadev.transacoes.domain.TipoDeTransacao;
+import br.com.rponte.rinhadev.transacoes.domain.Transacao;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

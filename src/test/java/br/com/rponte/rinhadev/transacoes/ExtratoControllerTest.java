@@ -1,6 +1,7 @@
 package br.com.rponte.rinhadev.transacoes;
 
 import base.SpringBootIntegrationTest;
+import br.com.rponte.rinhadev.transacoes.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

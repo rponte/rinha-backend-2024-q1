@@ -1,5 +1,7 @@
 package br.com.rponte.rinhadev.transacoes;
 
+import br.com.rponte.rinhadev.transacoes.domain.Cliente;
+import br.com.rponte.rinhadev.transacoes.domain.Transacao;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;

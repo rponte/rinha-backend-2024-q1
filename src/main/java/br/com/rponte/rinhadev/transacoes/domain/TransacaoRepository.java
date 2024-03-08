@@ -1,4 +1,4 @@
-package br.com.rponte.rinhadev.transacoes;
+package br.com.rponte.rinhadev.transacoes.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

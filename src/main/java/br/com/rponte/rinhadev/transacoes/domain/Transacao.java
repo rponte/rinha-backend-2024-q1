@@ -1,13 +1,8 @@
-package br.com.rponte.rinhadev.transacoes;
+package br.com.rponte.rinhadev.transacoes.domain;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import static javax.persistence.EnumType.*;
 import static javax.persistence.GenerationType.*;

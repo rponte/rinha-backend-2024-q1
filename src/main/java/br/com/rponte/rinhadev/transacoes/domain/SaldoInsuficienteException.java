@@ -1,4 +1,4 @@
-package br.com.rponte.rinhadev.transacoes;
+package br.com.rponte.rinhadev.transacoes.domain;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 

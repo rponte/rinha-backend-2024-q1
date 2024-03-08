@@ -1,5 +1,9 @@
 package br.com.rponte.rinhadev.transacoes;
 
+import br.com.rponte.rinhadev.transacoes.domain.Cliente;
+import br.com.rponte.rinhadev.transacoes.domain.ClienteRepository;
+import br.com.rponte.rinhadev.transacoes.domain.Transacao;
+import br.com.rponte.rinhadev.transacoes.domain.TransacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,4 +37,5 @@ public class ExtratoController {
                 ExtratoResponse.of(cliente, ultimasTransacoes)
         );
     }
+
 }
