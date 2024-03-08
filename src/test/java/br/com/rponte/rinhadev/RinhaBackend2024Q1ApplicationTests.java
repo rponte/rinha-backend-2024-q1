@@ -67,7 +67,7 @@ class RinhaBackend2024Q1ApplicationTests {
     void validateSpringDataJpaPluginConfig() {
         assertAll("spring datasource config",
                 () -> _assertPropertyEquals("org.testcontainers.jdbc.ContainerDatabaseDriver", "spring.datasource.driverClassName"),
-                () -> _assertPropertyEquals("jdbc:tc:postgresql:14.5:////test_db", "spring.datasource.url"),
+                () -> _assertPropertyEquals("jdbc:tc:postgresql:16.2:////test_db", "spring.datasource.url"),
                 () -> _assertPropertyEquals("postgres", "spring.datasource.username"),
                 () -> _assertPropertyEquals("postgres", "spring.datasource.password")
         );
