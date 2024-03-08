@@ -19,6 +19,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @RestController
 public class NovaTransacaoController {
@@ -42,6 +43,9 @@ public class NovaTransacaoController {
         switch (transacao.getTipo()) {
             case DEBITO  -> cliente.debita(transacao.getValor());
             case CREDITO -> cliente.credita(transacao.getValor());
+            default      -> {
+                throw new ResponseStatusException(UNPROCESSABLE_ENTITY, "operação inválida: " + transacao.getTipo());
+            }
         };
 
         repository.save(transacao);
