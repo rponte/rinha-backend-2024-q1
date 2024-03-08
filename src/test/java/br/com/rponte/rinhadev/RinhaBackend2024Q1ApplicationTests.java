@@ -74,8 +74,8 @@ class RinhaBackend2024Q1ApplicationTests {
         assertAll("spring datasource config - connection pool (HikariCP)",
                 () -> _assertPropertyEquals("false", "spring.datasource.hikari.auto-commit"),
                 () -> _assertPropertyEquals("20", "spring.datasource.hikari.maximum-pool-size"),
-                () -> _assertPropertyEquals("5000", "spring.datasource.hikari.connection-timeout"),
-                () -> _assertPropertyEquals("2000", "spring.datasource.hikari.validation-timeout"),
+                () -> _assertPropertyEquals("1000", "spring.datasource.hikari.connection-timeout"),
+                () -> _assertPropertyEquals("500", "spring.datasource.hikari.validation-timeout"),
                 () -> _assertPropertyEquals("1800000", "spring.datasource.hikari.max-lifetime"),
                 () -> _assertPropertyEquals("60000", "spring.datasource.hikari.leak-detection-threshold")
         );
