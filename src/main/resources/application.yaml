@@ -37,8 +37,12 @@ spring:
             validation-timeout: 2000        # 5s
             max-lifetime: 1800000           # 30min
             leak-detection-threshold: 60000 # 1min
+    # Creates database schemas via schema.sql
+    sql:
+        init:
+            mode: always
     jpa:
-        generate-ddl: true
+        generate-ddl: false # disables hibernate schema generation
         show-sql: true
         open-in-view: false
         hibernate:

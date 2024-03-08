@@ -10,8 +10,10 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
 @ActiveProfiles("test")
+@SpringBootTest(properties = {
+        "spring.sql.init.mode=never" // disables schema creation
+})
 class RinhaBackend2024Q1ApplicationTests {
 
     @Autowired
@@ -78,7 +80,7 @@ class RinhaBackend2024Q1ApplicationTests {
                 () -> _assertPropertyEquals("60000", "spring.datasource.hikari.leak-detection-threshold")
         );
         assertAll("spring jpa config",
-                () -> _assertPropertyEquals("true", "spring.jpa.generate-ddl"),
+                () -> _assertPropertyEquals("false", "spring.jpa.generate-ddl"),
                 () -> _assertPropertyEquals("true", "spring.jpa.show-sql"),
                 () -> _assertPropertyEquals("false", "spring.jpa.open-in-view"),
                 () -> _assertPropertyEquals("update", "spring.jpa.hibernate.ddl-auto"),
