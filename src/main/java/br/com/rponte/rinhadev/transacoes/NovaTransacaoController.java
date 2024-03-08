@@ -4,16 +4,19 @@ import br.com.rponte.rinhadev.transacoes.domain.Cliente;
 import br.com.rponte.rinhadev.transacoes.domain.ClienteRepository;
 import br.com.rponte.rinhadev.transacoes.domain.Transacao;
 import br.com.rponte.rinhadev.transacoes.domain.TransacaoRepository;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
+import org.zalando.problem.ThrowableProblem;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -46,5 +49,25 @@ public class NovaTransacaoController {
         return ResponseEntity.ok(
                 new NovaTransacaoResponse(cliente.getSaldo(), cliente.getLimite())
         );
+    }
+
+    /**
+     * Handles database CHECK constraint error
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleCheckConstraintError(ConstraintViolationException ex, WebRequest request) {
+
+        Status status = Status.UNPROCESSABLE_ENTITY;
+        URI type = URI.create(request.getDescription(false).replace("uri=", ""));
+
+        ThrowableProblem problem = Problem.builder()
+                .withType(type)
+                .withStatus(status)
+                .withTitle(status.getReasonPhrase())
+                .withDetail("saldo da conta insuficiente")
+                .build();
+
+        return ResponseEntity
+                .unprocessableEntity().body(problem); // HTTP 422
     }
 }
