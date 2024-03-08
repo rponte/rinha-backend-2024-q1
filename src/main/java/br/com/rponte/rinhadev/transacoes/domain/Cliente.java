@@ -1,10 +1,12 @@
 package br.com.rponte.rinhadev.transacoes.domain;
 
 import org.hibernate.annotations.Check;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Entity
+@DynamicUpdate
 @Check(constraints = "(saldo + limite) >= 0")
 public class Cliente {
 
