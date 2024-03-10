@@ -44,7 +44,7 @@ class RinhaBackend2024Q1ApplicationTests {
         );
         assertAll("actuator config",
                 () -> _assertPropertyEquals("*", "management.endpoints.jmx.exposure.include"),
-                () -> _assertPropertyEquals("health", "management.endpoints.web.exposure.include"),
+                () -> _assertPropertyEquals("health,metrics", "management.endpoints.web.exposure.include"),
                 () -> _assertPropertyEquals("always", "management.endpoint.health.show-details"),
                 () -> _assertPropertyEquals("always", "management.endpoint.health.show-components"),
                 () -> _assertPropertyEquals("true", "management.endpoint.health.probes.enabled"),
