@@ -5,6 +5,14 @@ server:
     port: 8080
     servlet:
         context-path: /
+    tomcat:
+        accept-count: 460
+        max-connections: 8192
+        connection-timeout: 5000
+        threads:
+            max: 20
+            min-spare: 20
+
     ##
     # Error handling
     # https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.server
@@ -91,7 +99,7 @@ management:
                 include: "*"
         web:
             exposure:
-                include: health
+                include: health,metrics
     endpoint:
         health:
             show-details: always
