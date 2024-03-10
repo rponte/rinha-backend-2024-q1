@@ -28,7 +28,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./rinha-env/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 #volumes:
 #  postgres-data: # named volumes can be managed easier using docker-compose
