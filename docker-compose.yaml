@@ -17,15 +17,15 @@ services:
       - "9999:8080"
     depends_on:
       - postgres
-#    ulimits:
-#      nofile:
-#        soft: 1000000
-#        hard: 1000000
+    ulimits:
+      nofile:
+        soft: 1000000
+        hard: 1000000
     deploy:
       resources:
         limits:
-          cpus: "4"
-          memory: "512MB"
+          cpus: "0.55"
+          memory: "200MB"
     logging:
       driver: "none"
 
@@ -39,24 +39,25 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
+      - postgres-data:/var/lib/postgresql/data/
       - ./rinha-env/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./rinha-env/postgresql.conf:/etc/postgresql.conf:ro
     command: [ "postgres", "-c", "config_file=/etc/postgresql.conf" ]
-#    ulimits:
-#      nofile:
-#        soft: 1000000
-#        hard: 1000000
+    ulimits:
+      nofile:
+        soft: 1000000
+        hard: 1000000
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: '240MB'
+          cpus: '0.25'
+          memory: '140MB'
     logging:
       driver: "none"
 
-#volumes:
-#  postgres-data: # named volumes can be managed easier using docker-compose
-#    driver: local
+volumes:
+  postgres-data: # named volumes can be managed easier using docker-compose
+    driver: local
 
 networks:
   default:
