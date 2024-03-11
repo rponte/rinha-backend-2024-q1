@@ -6,7 +6,7 @@ SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10 \
 SPRING_SQL_INIT_MODE=never \
 SPRING_JPA_SHOW_SQL=false \
 LOGGING_LEVEL_ROOT=error \
-java -Xms128m -Xmx128m -Xss256k \
+java -Xms1024m -Xmx1024m -Xss256k \
     -XX:-OmitStackTraceInFastThrow \
     -XX:StringTableSize=10000 \
     -XX:+UseStringDeduplication \
