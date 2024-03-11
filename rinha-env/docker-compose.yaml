@@ -67,6 +67,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgresql.conf:/etc/postgresql.conf:ro
+    command: ["postgres", "-c", "config_file=/etc/postgresql.conf"]
     ulimits:
       nofile:
         soft: 1000000
