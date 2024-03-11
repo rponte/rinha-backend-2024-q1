@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 # Use este script para executar testes locais
+export GATLING_HOME=$HOME/Development/Tools/gatling-charts-highcharts-bundle-3.10.4
 
 RESULTS_WORKSPACE="$(pwd)/load-test/user-files/results"
-GATLING_BIN_DIR=$HOME/gatling/bin
+GATLING_BIN_DIR=$GATLING_HOME/bin
 GATLING_WORKSPACE="$(pwd)/load-test/user-files"
 
 runGatling() {
