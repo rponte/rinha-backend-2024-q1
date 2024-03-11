@@ -25,7 +25,7 @@ alter table if exists transacao
        foreign key (cliente_id)
        references cliente ;
 
-CREATE INDEX IF NOT EXISTS transacao_realizada_em_idx ON transacao (realizada_em DESC);
+CREATE INDEX IF NOT EXISTS transacao_cliente_id_realizada_em_idx ON transacao (cliente_id, realizada_em DESC);
 
 --
 -- Initial data
