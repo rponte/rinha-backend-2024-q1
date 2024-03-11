@@ -49,8 +49,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.25'
-          memory: '140MB'
+          cpus: '2'
+          memory: '240MB'
     logging:
       driver: "none"
 
