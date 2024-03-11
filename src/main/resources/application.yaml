@@ -5,20 +5,16 @@ server:
     port: 8080
     servlet:
         context-path: /
-    tomcat:
-        accept-count: 460
-        max-connections: 8192
-        connection-timeout: 5000
-        threads:
-            max: 20
-            min-spare: 20
+#    tomcat:
+#        accept-count: 460
+#        max-connections: 8192
+#        connection-timeout: 5000
+#        threads:
+#            max: 20
+#            min-spare: 20
 
     ##
     # Error handling
-    # https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.server
-    # https://github.com/spring-projects/spring-restdocs/issues/710
-    # https://www.baeldung.com/exception-handling-for-rest-with-spring#spring-boot
-    # https://reflectoring.io/spring-boot-exception-handling/
     ##
     error:
         include-message: always
@@ -30,6 +26,12 @@ server:
 # Spring Application
 ##
 spring:
+    ##
+    # Enable Virtual Threads (it needs Java 21)
+    ##
+    threads:
+        virtual:
+            enabled: true
     ##
     # DataSource and JPA/Hibernate (PostgreSQL)
     ##
@@ -76,14 +78,11 @@ spring:
         ansi:
             enabled: ALWAYS
     ##
-    # Zalando Problem Spring Web
-    # https://github.com/zalando/problem-spring-web/issues/732
+    # Error handling: Problem Detail
     ##
-    web:
-        resources:
-            add-mappings: false
     mvc:
-        throw-exception-if-no-handler-found: true
+        problemdetails:
+            enabled: true
     jackson:
         deserialization:
             accept_float_as_int: false

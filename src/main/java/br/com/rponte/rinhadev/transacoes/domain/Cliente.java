@@ -1,9 +1,9 @@
 package br.com.rponte.rinhadev.transacoes.domain;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
 
 @Entity
 @DynamicUpdate

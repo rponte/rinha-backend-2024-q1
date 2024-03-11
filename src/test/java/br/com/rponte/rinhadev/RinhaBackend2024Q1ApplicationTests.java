@@ -38,9 +38,7 @@ class RinhaBackend2024Q1ApplicationTests {
         );
         assertAll("spring config",
                 () -> _assertPropertyEquals("rinhadev", "spring.application.name"),
-                () -> _assertPropertyEquals("ALWAYS", "spring.output.ansi.enabled"),
-                () -> _assertPropertyEquals("false", "spring.web.resources.add-mappings"),
-                () -> _assertPropertyEquals("true", "spring.mvc.throw-exception-if-no-handler-found")
+                () -> _assertPropertyEquals("ALWAYS", "spring.output.ansi.enabled")
         );
         assertAll("actuator config",
                 () -> _assertPropertyEquals("*", "management.endpoints.jmx.exposure.include"),

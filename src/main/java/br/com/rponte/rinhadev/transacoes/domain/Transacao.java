@@ -1,11 +1,13 @@
 package br.com.rponte.rinhadev.transacoes.domain;
 
-import javax.persistence.*;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-import static javax.persistence.EnumType.*;
-import static javax.persistence.GenerationType.*;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 
 @Entity
 public class Transacao {

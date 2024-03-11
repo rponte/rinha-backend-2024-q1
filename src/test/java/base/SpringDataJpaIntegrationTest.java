@@ -1,9 +1,9 @@
 package base;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.persistence.EntityManager;
 import java.util.function.Consumer;
 import java.util.function.Function;
 

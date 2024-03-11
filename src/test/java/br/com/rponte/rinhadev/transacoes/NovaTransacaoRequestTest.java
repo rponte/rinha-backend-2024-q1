@@ -4,14 +4,14 @@ import base.SpringBootIntegrationTest;
 import br.com.rponte.rinhadev.transacoes.domain.Cliente;
 import br.com.rponte.rinhadev.transacoes.domain.TipoDeTransacao;
 import br.com.rponte.rinhadev.transacoes.domain.Transacao;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;

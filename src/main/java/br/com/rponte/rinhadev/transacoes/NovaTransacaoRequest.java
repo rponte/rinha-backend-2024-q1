@@ -3,8 +3,8 @@ package br.com.rponte.rinhadev.transacoes;
 import br.com.rponte.rinhadev.transacoes.domain.Cliente;
 import br.com.rponte.rinhadev.transacoes.domain.TipoDeTransacao;
 import br.com.rponte.rinhadev.transacoes.domain.Transacao;
+import jakarta.validation.constraints.*;
 
-import javax.validation.constraints.*;
 
 public record NovaTransacaoRequest(
         @NotNull @Positive Long valor,
