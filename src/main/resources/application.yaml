@@ -5,13 +5,13 @@ server:
     port: 8080
     servlet:
         context-path: /
-#    tomcat:
-#        accept-count: 460
-#        max-connections: 8192
-#        connection-timeout: 5000
-#        threads:
-#            max: 20
-#            min-spare: 20
+    tomcat:
+        accept-count: 100
+        max-connections: 8192
+        connection-timeout: 5000
+        threads:
+            max: 64
+            min-spare: 64
 
     ##
     # Error handling
@@ -31,7 +31,7 @@ spring:
     ##
     threads:
         virtual:
-            enabled: true
+            enabled: false
     ##
     # DataSource and JPA/Hibernate (PostgreSQL)
     ##
